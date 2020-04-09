@@ -9,7 +9,8 @@
     <link rel="stylesheet" type="text/css" href="css/iconfont.css" />
     <link rel="stylesheet" type="text/css" href="css/main.css" />
     <!-- 导入bs的样式 -->
-    <link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css" />
+	<link rel="stylesheet" href="./js/bootstrap/css/bootstrap.min.css" />
+	
   </head>
 
   <body>
@@ -33,24 +34,22 @@
       </div>
     </div>
     <!-- bootstarp的弹出框 -->
-    <!-- Modal -->
-    <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
-        <div class="modal-dialog" role="document">
-          <div class="modal-content">
-            <div class="modal-header">
-              <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
-              <h4 class="modal-title" id="myModalLabel">提示!!!</h4>
-            </div>
-            <div class="modal-body">
-              <!-- 这里用来放置模态框的内容 -->
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
-              <!-- <button type="button" class="btn btn-primary">Save changes</button> -->
-            </div>
-          </div>
-        </div>
-      </div>
+	<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+		<div class="modal-dialog" role="document">
+		  <div class="modal-content">
+			<div class="modal-header">
+			  <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+			  <h4 class="modal-title" id="myModalLabel">提示</h4>
+			</div>
+			<div class="modal-body">
+			  ...
+			</div>
+			<div class="modal-footer">
+			  <button type="button" class="btn btn-default" data-dismiss="modal">关闭</button>
+			</div>
+		  </div>
+		</div>
+	  </div>
 
 
 
@@ -63,6 +62,42 @@
 <!-- 导入bs的js -->
 <script src="./js/bootstrap/js/bootstrap.min.js"></script>
 <script>
+
+
+	$('.input_sub').on('click', function (e) {
+		// 阻止默认提交行为
+		e.preventDefault()
+
+		// 检测内容是否为空
+		if ($('.input_txt').val() == '' || $('.input_pass').val() == '') {
+			$('.modal-body').text('请填写完整!')
+			$('#myModal').modal()
+			return
+		}
+		
+		// 发送请求
+		$.post({
+			url: 'https://autumnfish.cn/big/admin/login',
+			data: {
+				user_name: $('.input_txt').val(),
+				password: $('.input_pass').val()
+			},
+			success: function(res) {
+				// 检测登录是否成功
+				if (res.code == 200) {
+					// 登录成功
+					// 跳转到主页
+					location.href = 'index.html'
+				} else if (res.code == 400) {
+					$('.modal-body').text('用户名或密码错误!')
+					$('#myModal').modal()
+				}
+			}
+		})
+	})
+
+
+
   /*
     功能分析：
       1 对输入框的内容进行检测，不能为空，如果为空进行提示
@@ -72,85 +107,52 @@
         - 2.2 登录失败，提示用户
   */
   // 给登录按钮添加事件
-  $('.input_sub').on('click',function(e){
-    // 取消按钮默认行为
-    e.preventDefault()
-    // 判断两个输入框是否为空
-    if ($('.input_txt').val() === '' || $('.input_pass').val() === '') {
-      // .modal-body为bootstrap里的弹出框内容
-      $('.modal-body').text('请输入完整')
-      // 弹出弹窗
-      $('#myModal').modal();
-      return
-    }
-    // 发送post形式的ajax请求
-    $.post({
-      url : 'https://autumnfish.cn/big/admin/login',
-      data : {
-        user_name : $('.input_txt').val(),
-        password : $('.input_pass').val()
-      },
-      success : function(res){
-        if (res.code===200) {
-          location.href = 'index.html'
-        }else if(res.code===400){
-          $('.modal-body').text('密码或用户名输入错误')
-          $('#myModal').modal();
-        }
-      }
-    })
-  })
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // $('.input_sub').on('click', function (e) {
-  //   // 阻止默认的提交
-  //   e.preventDefault();
-
-  //   // 检测内容是否为空(失败检测)
+  // $('.input_sub').on('click',function(e){
+  //   // 取消按钮默认行为
+  //   e.preventDefault()
+  //   // 判断两个输入框是否为空
   //   if ($('.input_txt').val() === '' || $('.input_pass').val() === '') {
-  //     // 通过设置的模态框将提示信息展示
-  //     $('.modal-body').text('内容没有填写完毕');
+  //     // .modal-body为bootstrap里的弹出框内容
+  //     $('.modal-body').text('请输入完整')
+  //     // 弹出弹窗
   //     $('#myModal').modal();
-  //     return;
+  //     return
   //   }
-
-  //   // 将用户名和密码提交给接口
+  //   // 发送post形式的ajax请求
   //   $.post({
   //     url : 'https://autumnfish.cn/big/admin/login',
   //     data : {
   //       user_name : $('.input_txt').val(),
   //       password : $('.input_pass').val()
   //     },
-  //     success : function (res) {
-  //       // 检测登录是否成功
-  //       if (res.code === 200) {
-  //         // 跳转到index.html
-  //         location.href = 'index.html';
-  //       } else if (res.code === 400) {
-  //         // 通过模态框显示提示信息
-  //         $('.modal-body').text('用户名或密码错误');
+  //     success : function(res){
+  //       if (res.code===200) {
+  //         location.href = 'index.html'
+  //       }else if(res.code===400){
+  //         $('.modal-body').text('密码或用户名输入错误')
   //         $('#myModal').modal();
   //       }
   //     }
-  //   });
-  // });
+  //   })
+  // })
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 </script>
