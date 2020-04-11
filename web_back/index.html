@@ -201,22 +201,52 @@
 
 
     <script>
+		// 退出按钮点击事件
+		$('.user_center_link>a').eq(1).on('click', function () {
+			// 弹出模态框进行确认
+			$('#myModal').modal()
+		})
+
+		// 离开按钮点击事件
+		$('.btn-leave').on('click', function () {
+			$.post({
+				url: 'https://autumnfish.cn/big/admin/logout',
+				success: function (res) {
+					location.href = 'login.html'
+				}
+			})
+		})
+
+		// 获取用户名和头像
+		$.get({
+			url: 'https://autumnfish.cn/big/admin/getuser',
+			success: function(res) {
+				// 检测响应是否成功
+				if (res.code == 200) {
+					$('.user_info img, .user_center_link img').css('src', res.data.user_pic)
+					$('.user_info i').text(res.data.nickname)
+				}
+			}
+		})
+
+
+
       // 点击退出,将请求发至服务端
       // 给退出按钮添加事件
-      $('.btn_exit').on('click',function(){
-        // 弹出弹窗
-        $('#myModal').modal()
-      })
-      // 给离开按钮添加事件
-      $('.btn-leave').on('click',function(){
-        // 发送psot形式的ajax请求
-        $.post({
-          url : 'https://autumnfish.cn/big/admin/logout',
-          success : function(res){
-            location.href = 'login.html'
-          }
-        })
-      })
+      // $('.btn_exit').on('click',function(){
+      //   // 弹出弹窗
+      //   $('#myModal').modal()
+      // })
+      // // 给离开按钮添加事件
+      // $('.btn-leave').on('click',function(){
+      //   // 发送psot形式的ajax请求
+      //   $.post({
+      //     url : 'https://autumnfish.cn/big/admin/logout',
+      //     success : function(res){
+      //       location.href = 'login.html'
+      //     }
+      //   })
+      // })
 
       
 

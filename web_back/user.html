@@ -131,82 +131,141 @@
      </div>
 
     <script>
+
+		// 请求服务端用户信息
+		$.get({
+			url: 'https://autumnfish.cn/big/admin/userinfo_get',
+			success: function (res) {
+				if (res.code == 200) {
+					// 将内容设置给对应的input
+					$.each(res.data, function (key, value) {
+						$('input.' + key).val(value)
+					})
+					// 单独给图片设置
+					$('img.user_pic').prop('src', res.data.user_pic)
+				}
+			}
+    }) 
+    
+    // 上传图片预览
+    $('#exampleInputFile').on('change', function () {
+      var tempSrc = URL.createObjectURL($(this)[0].files[0])
+      $('.user_pic').prop('src', tempSrc)
+    })
+
+		// 修改按钮
+		$('.btn-success').on('click', function (e) {
+      // 阻止默认行为
+      e.preventDefault()
+			// 检测表单是否填写完整
+			if ($('.username').val === '' ||
+				$('.email').val === '' || 
+				$('.nickname').val === '' || 
+				$('.password').val === '' || 
+				!$('#exampleInputFile')[0].files[0]
+			) {
+				// 提示信息
+        $('.modal-body').text('没有完整填写表单')
+        $('#myModal').modal()
+				return
+      }
+      
+      
+
+      // 发送请求
+      // 准备 formData对象
+      var fd = new FormData($('form')[0])
+			$.post({
+        url: 'https://autumnfish.cn/big/admin/userinfo_edit',
+        data: fd,
+        contentType: false,
+        processData: false,
+        success: function (res) {
+          // 设置成功跳转到登录页
+          if (res.code == 200) {
+            parent.location.href = 'login.html'
+          }
+        }
+			})
+		})
+
+
       // $(function(){
         // 个人中心
         // 文档 : 22、编辑用户信息
         // 向服务端发送请求,同步数据
         // 进入页面获取信息
-        $.get({
-        url : 'http://localhost:8000/admin/getuser',
-        success : function(res){
-          // console.log(res)
-          if (res.code===200){
-            // 使用便利方法便利res.data中的每一个元素
-            // 结构中input的类名和服务端回传的数据参数名一致,使用参数名便利获取input类名来添加内容
-            $.each(res.data,function(key,value){
-              // 字符串拼接,用input标签后面加类名获取除了img以外的input元素
-              // key 属性名   value 属性值 每个key对应一个value
-              $('input.' + key).val(value)
-            })
-            // 单独设置图片路径
-            $('img.user_pic').prop('src', res.data.user_pic);
+        // $.get({
+        // url : 'http://localhost:8000/admin/getuser',
+        // success : function(res){
+        //   // console.log(res)
+        //   if (res.code===200){
+        //     // 使用便利方法便利res.data中的每一个元素
+        //     // 结构中input的类名和服务端回传的数据参数名一致,使用参数名便利获取input类名来添加内容
+        //     $.each(res.data,function(key,value){
+        //       // 字符串拼接,用input标签后面加类名获取除了img以外的input元素
+        //       // key 属性名   value 属性值 每个key对应一个value
+        //       $('input.' + key).val(value)
+        //     })
+        //     // 单独设置图片路径
+        //     $('img.user_pic').prop('src', res.data.user_pic);
 
 
 
-            //  $('.username').val(res.data.username)
-            //  $('.nickname').val(res.data.nickname)
-            //  $('.email').val(res.data.email)
-            //  $('.user_pic').prop('src',res.data.user_pic)
-            //  $('.password').val(res.data.password)
-          }
+        //     //  $('.username').val(res.data.username)
+        //     //  $('.nickname').val(res.data.nickname)
+        //     //  $('.email').val(res.data.email)
+        //     //  $('.user_pic').prop('src',res.data.user_pic)
+        //     //  $('.password').val(res.data.password)
+        //   }
          
-        }
-        })
-        // // 本地图片预览
-        $('#exampleInputFile').on('change',function(){
-          // console.dir($('#exampleInputFile'))
-          var imgSrc = URL.createObjectURL($(this)[0].files[0])
-          $('.user_pic').prop('src',imgSrc)
-        })
+        // }
+        // })
+        // // // 本地图片预览
+        // $('#exampleInputFile').on('change',function(){
+        //   // console.dir($('#exampleInputFile'))
+        //   var imgSrc = URL.createObjectURL($(this)[0].files[0])
+        //   $('.user_pic').prop('src',imgSrc)
+        // })
 
-        // 修改按钮点击事件
-        $('.btn-success').on('click',function(e){
-          // 阻止点击按钮默认行为
-          e.preventDefault()
-          // 判断输入内容是否为空
-          if (
-            $(".username").val()==='' ||
-            $('.nickname').val()===''||
-            $('.email').val()===''||
-            $('.password').val()===''||
-            // 文件域无内容
-            !$('#exampleInputFile')[0].files[0]
-            ){
-              $('.modal-body').text('没有完整填写表单');
-              $('#myModal').modal();
-              return
-            }
-          // 设置变量保存表单数据
-          var fd = new FormData($("form")[0])
+        // // 修改按钮点击事件
+        // $('.btn-success').on('click',function(e){
+        //   // 阻止点击按钮默认行为
+        //   e.preventDefault()
+        //   // 判断输入内容是否为空
+        //   if (
+        //     $(".username").val()==='' ||
+        //     $('.nickname').val()===''||
+        //     $('.email').val()===''||
+        //     $('.password').val()===''||
+        //     // 文件域无内容
+        //     !$('#exampleInputFile')[0].files[0]
+        //     ){
+        //       $('.modal-body').text('没有完整填写表单');
+        //       $('#myModal').modal();
+        //       return
+        //     }
+        //   // 设置变量保存表单数据
+        //   var fd = new FormData($("form")[0])
 
-          // 发送post形式的ajax请求 
-          $.post({
-            url : 'http://localhost:8000/admin/userinfo_edit',
-            data : fd,
-            // 不指定内容类型
-            contentType : false,
-            // 不转换内容类型
-            processData : false,
-            success : function(res){
-              // 返回登录页面
-              // window中的parent属性,用于在iframe中获取父页面
-              if (res.code===200){
-                parent.location.href = 'login.html'
-              }
+        //   // 发送post形式的ajax请求 
+        //   $.post({
+        //     url : 'http://localhost:8000/admin/userinfo_edit',
+        //     data : fd,
+        //     // 不指定内容类型
+        //     contentType : false,
+        //     // 不转换内容类型
+        //     processData : false,
+        //     success : function(res){
+        //       // 返回登录页面
+        //       // window中的parent属性,用于在iframe中获取父页面
+        //       if (res.code===200){
+        //         parent.location.href = 'login.html'
+        //       }
              
-            }
-          })
-        })
+        //     }
+        //   })
+        // })
 
 
         // $('#exampleInputFile').change(function() {
